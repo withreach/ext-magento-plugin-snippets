@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Directory\Model\Currency" type="Reach\Payment\Model\ReachCurrency" />
+    <preference for="Magento\Store\Model\Store" type="Reach\Payment\Model\Store" />
+
+    <preference for="Reach\Payment\Api\StashInterface" type="Reach\Payment\Model\Stash" />
+
+    <preference for="Reach\Payment\Api\PayPalManagementInterface" type="Reach\Payment\Model\PayPalManagement" />
+    <preference for="Reach\Payment\Api\GuestPayPalManagementInterface" type="Reach\Payment\Model\GuestPayPalManagement" />
+
+    <preference for="Reach\Payment\Api\DutyCalculatorInterface" type="Reach\Payment\Model\DutyCalculator" />
+    <preference for="Reach\Payment\Api\GuestDutyCalculatorInterface" type="Reach\Payment\Model\GuestDutyCalculator" />
+
+    <preference for="Reach\Payment\Api\NotificationInterface" type="Reach\Payment\Model\ReachNotification" />
+    <preference for="Reach\Payment\Api\SessionInterface" type="Reach\Payment\Model\ReachSession" />
+
+    <preference for="Reach\Payment\Api\Data\StashResponseInterface" type="Reach\Payment\Model\Api\Data\StashResponse" />
+    <preference for="Reach\Payment\Api\Data\DutyResponseInterface" type="Reach\Payment\Model\Api\Data\DutyResponse" />
+    <preference for="Reach\Payment\Api\Data\ResponseInterface" type="Reach\Payment\Model\Api\Data\Response" />
+    <preference for="Reach\Payment\Api\Data\HttpResponseInterface" type="Reach\Payment\Model\Api\Data\HttpResponse" />
+    <preference for="Reach\Payment\Api\Data\SessionResponseInterface" type="Reach\Payment\Model\Api\Data\SessionResponse" />
+    <preference for="Reach\Payment\Api\Data\ReachSessionRelationInterface" type="Reach\Payment\Model\ReachSessionRelation" />
+
+    <preference for="Reach\Payment\Api\ReachSessionRelationRepositoryInterface" type="Reach\Payment\Model\ReachSessionRelationRepository" />
+
+    <type name="Magento\Framework\Webapi\Rest\Request\DeserializerFactory">
+        <arguments>
+            <argument name="deserializers" xsi:type="array">
+                <item name="application_x_www_form_urlencoded" xsi:type="array">
+                    <item name="type" xsi:type="string">application/x-www-form-urlencoded</item>
+                    <item name="model" xsi:type="string">Reach\Payment\Webapi\Rest\Request\Deserializer\XWwwFormUrlencoded</item>
+                </item>
+                <item name="application_json" xsi:type="array">
+                    <item name="type" xsi:type="string">application/json</item>
+                    <item name="model" xsi:type="string">Magento\Framework\Webapi\Rest\Request\Deserializer\Json</item>
+                </item>
+                <item name="application_xml" xsi:type="array">
+                    <item name="type" xsi:type="string">application/xml</item>
+                    <item name="model" xsi:type="string">Magento\Framework\Webapi\Rest\Request\Deserializer\Xml</item>
+                </item>
+                <item name="application_xhtml_xml" xsi:type="array">
+                    <item name="type" xsi:type="string">application/xhtml+xml</item>
+                    <item name="model" xsi:type="string">Magento\Framework\Webapi\Rest\Request\Deserializer\Xml</item>
+                </item>
+                <item name="text_xml" xsi:type="array">
+                    <item name="type" xsi:type="string">text/xml</item>
+                    <item name="model" xsi:type="string">Magento\Framework\Webapi\Rest\Request\Deserializer\Xml</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="ReachFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Reach\Payment\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Reach\Payment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">ReachGatewayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">ReachGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="ReachGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Reach\Payment\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="ReachGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">ReachGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ReachGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">ReachGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Commands infrastructure -->
+    <virtualType name="ReachGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">ReachGatewayAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">ReachGatewayCaptureCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize command -->
+    <virtualType name="ReachGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ReachGatewayAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Reach\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Reach\Payment\Gateway\Http\Client\ClientMock</argument>
+            <argument name="handler" xsi:type="object">Reach\Payment\Gateway\Response\DefaultResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorization Request -->
+    <virtualType name="ReachGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="reachSession" xsi:type="string">Reach\Payment\Gateway\Request\ReachSessionRequest</item>
+                <item name="mockData" xsi:type="string">Reach\Payment\Gateway\Request\MockDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Reach\Payment\Gateway\Request\AuthorizationRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">ReachGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Capture command -->
+    <virtualType name="ReachGatewayCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Reach\Payment\Gateway\Request\CaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Reach\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Reach\Payment\Gateway\Http\Client\CaptureClientMock</argument>
+            <argument name="handler" xsi:type="object">Reach\Payment\Gateway\Response\TxnIdHandler</argument>
+<!--            <argument name="validator" xsi:type="object">Magento\SamplePaymentGateway\Gateway\Validator\ResponseCodeValidator</argument>-->
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Request -->
+    <type name="Reach\Payment\Gateway\Request\CaptureRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">ReachGatewayConfig</argument>
+        </arguments>
+    </type>
+
+<!--    &lt;!&ndash; Void command &ndash;&gt;-->
+<!--    <virtualType name="ReachGatewayVoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">-->
+<!--        <arguments>-->
+<!--            <argument name="requestBuilder" xsi:type="object">Reach\Payment\Gateway\Request\VoidRequest</argument>-->
+<!--            <argument name="handler" xsi:type="object">Reach\Payment\Gateway\Response\TxnIdHandler</argument>-->
+<!--            <argument name="transferFactory" xsi:type="object">Reach\Payment\Gateway\Http\TransferFactory</argument>-->
+<!--&lt;!&ndash;            <argument name="validator" xsi:type="object">Magento\SamplePaymentGateway\Gateway\Validator\ResponseCodeValidator</argument>&ndash;&gt;-->
+<!--            <argument name="client" xsi:type="object">Magento\SamplePaymentGateway\Gateway\Http\Client\ClientMock</argument>-->
+<!--        </arguments>-->
+<!--    </virtualType>-->
+
+<!--    &lt;!&ndash; Void Request &ndash;&gt;-->
+<!--    <type name="Magento\SamplePaymentGateway\Gateway\Request\VoidRequest">-->
+<!--        <arguments>-->
+<!--            <argument name="config" xsi:type="object">SamplePaymentGatewayConfig</argument>-->
+<!--        </arguments>-->
+<!--    </type>-->
+
+    <!-- Response handlers -->
+    <virtualType name="ReachGatewayResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="txnid" xsi:type="string">Reach\Payment\Gateway\Response\TxnIdHandler</item>
+                <item name="fraud" xsi:type="string">Reach\Payment\Gateway\Response\FraudHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+</config>

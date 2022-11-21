@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="reach-checkout-sandbox" type="host">https://checkout-sandbox.gointerpay.net</value>
+                <value id="reach-assets-sandbox" type="host">https://asset.sandbox.withreach.com</value>
+                <!-- TODO:: include the production domain -->
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="reach-checkout-sandbox" type="host">https://checkout-sandbox.gointerpay.net/</value>
+                <value id="reach-assets-sandbox" type="host">https://asset.sandbox.withreach.com</value>
+                <value id="reach-tst-kaptcha" type="host">https://tst.kaptcha.com/</value>
+                <!-- TODO:: include the production domain -->
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="reach-static" type="host">https://st.rch.io</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="reach-checkout-sandbox" type="host">https://stash-sandbox.gointerpay.net/</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

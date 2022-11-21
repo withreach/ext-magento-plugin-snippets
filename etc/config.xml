@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <reach>
+            <global>
+                <active>0</active>
+                <mode>0</mode>
+                <allowspecific>0</allowspecific>
+            </global>
+            <dhl>
+                <enable>0</enable>
+                <duty_label>Pay Tax and Duties</duty_label>
+                <pricing_strategy>MAXIMUM</pricing_strategy>
+                <allowspecific>0</allowspecific>
+                <pref_tariffs>1</pref_tariffs>
+                <clearance_mode>COURIER</clearance_mode>
+                <end_use>PERSONAL</end_use>
+                <transport_mode>AIR</transport_mode>
+            </dhl>
+        </reach>
+        <payment>
+            <reach_cc>
+                <active>0</active>
+                <model>Reach\Payment\Model\Cc</model>
+                <title>Credit Card (Reach)</title>
+                <payment_action>authorize</payment_action>
+                <ccfields>csc,expdate,acct</ccfields>
+                <allowspecific>0</allowspecific>
+            </reach_cc>  
+            <reach_paypal>
+                <active>0</active>
+                <model>Reach\Payment\Model\Paypal</model>
+                <payment_action>authorize</payment_action>
+                <title>Paypal (Reach)</title>
+                <allowspecific>0</allowspecific>
+            </reach_paypal>
+            <reach_dropin>
+                <debug>1</debug>
+                <active>0</active>
+                <model>ReachFacade</model>
+                <merchant_gateway_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <order_status>pending_payment</order_status>
+                <payment_action>authorize</payment_action>
+                <title>Reach Drop In (2)</title>
+                <currency>USD</currency>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <sort_order>1</sort_order>
+                <debugReplaceKeys>MERCHANT_KEY</debugReplaceKeys>
+                <paymentInfoKeys>FRAUD_MSG_LIST</paymentInfoKeys>
+                <privateInfoKeys>FRAUD_MSG_LIST</privateInfoKeys>
+            </reach_dropin>
+        </payment>
+    </default>
+</config>
