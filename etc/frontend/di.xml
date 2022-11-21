@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Payment\Model\CcGenericConfigProvider">
+        <arguments>
+            <argument name="methodCodes" xsi:type="array">
+                <item name="reach_cc" xsi:type="const">Reach\Payment\Model\Cc::METHOD_CC</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="reach_global" xsi:type="object">Reach\Payment\Model\ReachConfigProvider</item>
+                <item name="reach_payment_cc_config_provider" xsi:type="object">Reach\Payment\Model\CcConfigProvider</item>
+                <item name="reach_duty" xsi:type="object">Reach\Payment\Model\DutyConfigProvider</item>
+                <item name="reach_dropin" xsi:type="object">Reach\Payment\Model\Ui\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- On currency switch we want to clean part of the checkout session. This plugin is introduced for that purpose -->
+    <type name="Magento\Directory\Controller\Currency\SwitchAction">
+        <plugin name="Reach_Payment_currency_switch_plugin"
+                type="Reach\Payment\Plugin\Magento\Directory\Controller\Currency\SwitchAction" sortOrder="1"
+                disabled="false"/>
+    </type>
+    <!-- Removing `you will be charged for message from Magento checkout sidebar`. This plugin is introduced for that purpose -->
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="Reach_Payment_checkout_sidebar_plugin"
+                type="Reach\Payment\Plugin\Magento\Checkout\Block\Checkout\LayoutProcessor" sortOrder="1"
+                disabled="false"/>
+    </type>
+
+    <type name="Reach\Payment\Block\Info">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item xsi:type="string" name="is_secure_mode">1</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

@@ -1,0 +1,25 @@
+{
+  "name": "reach/reachpayment",
+  "description": "",
+  "type": "magento2-module",
+  "authors": [
+      {
+        "name": "Reach",
+        "email": "support@withreach.com",
+        "homepage": "https://withreach.com/"
+      }
+  ],
+  "require": {
+    "magento/module-payment": "100.2.*||100.3.*||^100.4.0",
+    "magento/module-checkout": "100.2.*||100.3.*||^100.4.0",
+    "magento/module-sales": "101.0.*||102.0.*||^102.1.0||^103"
+  },
+  "autoload": {
+      "files": [
+          "registration.php"
+      ],
+      "psr-4": {
+          "Reach\\Payment\\": ""
+      }
+  }
+}
